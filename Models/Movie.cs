@@ -22,12 +22,10 @@ namespace moviesApi.Models
 
         [MaxLength(3, ErrorMessage = "There must be at most 3 genres")]
         public List<Genre>? Genres { get; set; }
+   
+        public DateTime? Created { get; set; }
 
-        [Timestamp]
-        public DateTime Created { get; set; }
-
-        [Timestamp]
-        public DateTime Updated { get; set; }
+        public DateTime? Updated { get; set; } 
 
 
     }
