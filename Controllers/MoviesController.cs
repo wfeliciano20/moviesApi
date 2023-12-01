@@ -17,31 +17,31 @@ namespace moviesApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<Movie>>>> GetAlLMovies()
+        public async Task<ActionResult<ServiceResponse<List<MovieResponseDto>>>> GetAlLMovies()
         {
             return Ok(await _movieRepository.GetAllMovies());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<Movie>>> GetMovieById(int id)
+        public async Task<ActionResult<ServiceResponse<MovieResponseDto>>> GetMovieById(int id)
         {
             return Ok(await _movieRepository.GetMovieById(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<Movie>>> CreateMovie(MovieDto movieDto)
+        public async Task<ActionResult<ServiceResponse<MovieResponseDto>>> CreateMovie(MovieDto movieDto)
         {
             return Ok(await _movieRepository.CreateMovie(movieDto));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServiceResponse<Movie>>> UpdateMovie(int id, MovieDto movieDto)
+        public async Task<ActionResult<ServiceResponse<MovieResponseDto>>> UpdateMovie(int id, MovieDto movieDto)
         {
             return Ok(await _movieRepository.UpdateMovie(id, movieDto));
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<Movie>>> DeleteMovie(int id)
+        public async Task<ActionResult<ServiceResponse<MovieResponseDto>>> DeleteMovie(int id)
         {
             return Ok(await _movieRepository.DeleteMovie(id));
         }

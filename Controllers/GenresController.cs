@@ -17,31 +17,31 @@ namespace moviesApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<Genre>>>> GetAlLGenres()
+        public async Task<ActionResult<ServiceResponse<List<GenreResponseDto>>>> GetAlLGenres()
         {
             return Ok(await _genreRepository.GetAllGenres());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<Genre>>> GetGenreById(int id)
+        public async Task<ActionResult<ServiceResponse<GenreResponseDto>>> GetGenreById(int id)
         {
             return Ok(await _genreRepository.GetGenreById(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<Genre>>> CreateGenre(GenreDto genreDto)
+        public async Task<ActionResult<ServiceResponse<GenreResponseDto>>> CreateGenre(GenreDto genreDto)
         {
             return Ok(await _genreRepository.CreateGenre(genreDto));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ServiceResponse<Genre>>> UpdateGenre(int id, GenreDto genreDto)
+        public async Task<ActionResult<ServiceResponse<GenreResponseDto>>> Update(int id, GenreDto genreDto)
         {
             return Ok(await _genreRepository.UpdateGenre(id,genreDto));
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<Genre>>> DeleteGenre(int id)
+        public async Task<ActionResult<ServiceResponse<GenreResponseDto>>> DeleteGenre(int id)
         {
             return Ok(await _genreRepository.DeleteGenre(id));
         }

@@ -5,15 +5,15 @@ namespace moviesApi.Repositories
 {
     public interface IMovieRepository
     {
-        Task<ServiceResponse<List<Movie>>> GetAllMovies();
+        Task<ServiceResponse<List<MovieResponseDto>>> GetAllMovies();
 
-        Task<ServiceResponse<Movie>> GetMovieById(int id);
+        Task<ServiceResponse<MovieResponseDto>> GetMovieById(int id);
 
-        Task<ServiceResponse<Movie>> CreateMovie(MovieDto movie);
+        Task<ServiceResponse<MovieResponseDto>> CreateMovie(MovieDto movie);
 
-        Task<ServiceResponse<Movie>> UpdateMovie(int id, MovieDto movie);
+        Task<ServiceResponse<MovieResponseDto>> UpdateMovie(int id, MovieDto movie);
 
-        Task<ServiceResponse<Movie>> DeleteMovie(int id);
+        Task<ServiceResponse<MovieResponseDto>> DeleteMovie(int id);
 
         Task<ServiceResponse<String>> AddGenreToMovie(int id, int genreId);
     }

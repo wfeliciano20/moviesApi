@@ -22,10 +22,10 @@ namespace moviesApi.Repositories
         {
             ServiceResponse<string> response = new ServiceResponse<string>();
             var dbMovie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
-            if (dbMovie == null)
+            if (dbMovie != null)
             {
                 var dbGenre = await _context.Genres.FirstOrDefaultAsync(g => g.Id == genreId);
-                if (dbGenre == null)
+                if (dbGenre != null)
                 {
                     if (dbMovie.Genres != null)
                     {
@@ -60,9 +60,9 @@ namespace moviesApi.Repositories
             }
         }
 
-        public async Task<ServiceResponse<Movie>> CreateMovie(MovieDto movie)
+        public async Task<ServiceResponse<MovieResponseDto>> CreateMovie(MovieDto movie)
         {
-            ServiceResponse<Movie> response = new ServiceResponse<Movie>();
+            ServiceResponse<MovieResponseDto> response = new ServiceResponse<MovieResponseDto>();
             if (await _context.Movies.AnyAsync(m => m.Title.Equals(movie.Title)))
             {
                 response.Success = false;
@@ -72,26 +72,32 @@ namespace moviesApi.Repositories
             }
             else
             {
+                
                 Movie movieToSave = _mapper.Map<Movie>(movie);
+                movieToSave.Genres = new List<Genre>();
                 movieToSave.Created = DateTime.Now;
                 movieToSave.Updated = DateTime.Now;
                 _context.Movies.Add(movieToSave);
                 await _context.SaveChangesAsync();
-                response.Data = movieToSave;
+                response.Data = _mapper.Map<MovieResponseDto>(movieToSave);
                 return response;
             }
             
         }
 
-        public async Task<ServiceResponse<Movie>> DeleteMovie(int id)
+        public async Task<ServiceResponse<MovieResponseDto>> DeleteMovie(int id)
         {
-            ServiceResponse<Movie> response = new ServiceResponse<Movie>();
+            ServiceResponse<MovieResponseDto> response = new ServiceResponse<MovieResponseDto>();
             if(await _context.Movies.AnyAsync(m => m.Id == id))
             {
-                var movieToDelete = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+                var movieToDelete = await _context.Movies.Include(m=>m.Genres).FirstOrDefaultAsync(m => m.Id == id);
                 _context.Movies.Remove(movieToDelete);
                 await _context.SaveChangesAsync();
-                response.Data =movieToDelete;
+                if(movieToDelete.Genres == null)
+                {
+                    movieToDelete.Genres = new List<Genre>();
+                }
+                response.Data = _mapper.Map<MovieResponseDto>(movieToDelete);
                 return response;
                 
             }
@@ -104,13 +110,19 @@ namespace moviesApi.Repositories
             }
         }
 
-        public async Task<ServiceResponse<List<Movie>>> GetAllMovies()
+        public async Task<ServiceResponse<List<MovieResponseDto>>> GetAllMovies()
         {
-            ServiceResponse<List<Movie>> response = new ServiceResponse<List<Movie>>();
+            ServiceResponse<List<MovieResponseDto>> response = new ServiceResponse<List<MovieResponseDto>>();
             var movies = await _context.Movies.Include(m=>m.Genres).ToListAsync();
+            List<MovieResponseDto> result = new List<MovieResponseDto>();
             if(movies != null)
             {
-                response.Data = movies;
+                foreach(var movie in movies)
+                {
+                    result.Add(_mapper.Map<MovieResponseDto>(movie));
+                }
+                response.Data = result;
+
                 return response;
             }
             response.Success = false;
@@ -119,13 +131,13 @@ namespace moviesApi.Repositories
             return response;
         }
 
-        public async Task<ServiceResponse<Movie>> GetMovieById(int id)
+        public async Task<ServiceResponse<MovieResponseDto>> GetMovieById(int id)
         {
-            ServiceResponse<Movie> response = new ServiceResponse<Movie>();
+            ServiceResponse<MovieResponseDto> response = new ServiceResponse<MovieResponseDto>();
             var dbMovie = await _context.Movies.Include(m => m.Genres).FirstOrDefaultAsync(m => m.Id==id);
             if(dbMovie != null)
             {
-                response.Data=dbMovie;
+                response.Data=_mapper.Map<MovieResponseDto>(dbMovie);
                 return response;
             }
             else
@@ -137,16 +149,24 @@ namespace moviesApi.Repositories
             }
         }
 
-        public async Task<ServiceResponse<Movie>> UpdateMovie(int id, MovieDto movie)
+        public async Task<ServiceResponse<MovieResponseDto>> UpdateMovie(int id, MovieDto movie)
         {
-            ServiceResponse<Movie> response = new ServiceResponse<Movie>();
-            var movieToUpdate = await _context.Movies.FirstOrDefaultAsync(m => m.Id==id);
+            ServiceResponse<MovieResponseDto> response = new ServiceResponse<MovieResponseDto>();
+            var movieToUpdate = await _context.Movies.Include(m=>m.Genres).FirstOrDefaultAsync(m => m.Id==id);
             if (movieToUpdate != null)
             {
-                movieToUpdate = _mapper.Map<Movie>(movie);
+                if(movieToUpdate.Genres == null)
+                {
+                    movieToUpdate.Genres = new List<Genre>();
+                }
+
+                movieToUpdate.Title = movie.Title;
+                movieToUpdate.Description = movie.Description;
+                movieToUpdate.ReleaseYear = movie.ReleaseYear;
+                movieToUpdate.Rating = movie.Rating;
                 movieToUpdate.Updated = DateTime.Now;
                 await _context.SaveChangesAsync();
-                response.Data = movieToUpdate;
+                response.Data = _mapper.Map<MovieResponseDto>(movieToUpdate);
                 return response;
 
             }

@@ -5,15 +5,15 @@ namespace moviesApi.Repositories
 {
     public interface IGenreRepository
     {
-        Task<ServiceResponse<List<Genre>>> GetAllGenres();
+        Task<ServiceResponse<List<GenreResponseDto>>> GetAllGenres();
 
-        Task<ServiceResponse<Genre>> GetGenreById(int id);
+        Task<ServiceResponse<GenreResponseDto>> GetGenreById(int id);
 
-        Task<ServiceResponse<Genre>> CreateGenre(GenreDto genre);
+        Task<ServiceResponse<GenreResponseDto>> CreateGenre(GenreDto genre);
 
-        Task<ServiceResponse<Genre>> UpdateGenre(int id, GenreDto genre);
+        Task<ServiceResponse<GenreResponseDto>> UpdateGenre(int id, GenreDto genre);
 
-        Task<ServiceResponse<Genre>> DeleteGenre(int id);
+        Task<ServiceResponse<GenreResponseDto>> DeleteGenre(int id);
         Task<ServiceResponse<String>> AddMovieToGenre(int id, int movieId);
     }
 }
